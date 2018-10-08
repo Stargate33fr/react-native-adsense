@@ -1,0 +1,22 @@
+{
+  "name": "com.cdiscount.adsense",
+  "version": "1.0.0",
+  "description": "AdSense component for react-native",
+  "main": "RNAdSense",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stargate33fr/react-native-adsense.git"
+  },
+  "keywords": [
+    "AdSense"
+  ],
+  "author": "DEPRET Frédéric",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/Stargate33fr/react-native-adsense/issues"
+  },
+  "homepage": "https://github.com/Stargate33fr/react-native-adsense#readme"
+}
