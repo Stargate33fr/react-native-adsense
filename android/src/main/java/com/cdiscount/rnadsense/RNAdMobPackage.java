@@ -11,18 +11,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class RNAdMobPackage implements ReactPackage {
+public class RNAdSensePackage implements ReactPackage {
 
     @Override
-        // Deprecated from RN 0.47.0
-    public List<Class<? extends JavaScriptModule>> createJSModules() {
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-      return Arrays.<ViewManager>asList(
-          new RNAdSenseViewManager()
-      );
+        return Arrays.<ViewManager>asList(
+            new RNAdSenseViewManager()
+        );
     }
 }

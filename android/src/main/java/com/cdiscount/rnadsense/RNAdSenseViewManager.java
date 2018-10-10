@@ -5,14 +5,12 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Display;
-import android.view.Surface;
 import android.view.WindowManager;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.ViewGroupManager;
@@ -21,27 +19,186 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.doubleclick.AppEventListener;
-import com.google.android.gms.ads.DynamicHeightSearchAdRequest;
+import com.google.android.gms.ads.search.DynamicHeightSearchAdRequest;
 import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.SearchAdView;
-
+import com.google.android.gms.ads.search.SearchAdRequest;
+import com.google.android.gms.ads.search.SearchAdView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-class ReactAdSenseView extends ReactViewGroup implements AppEventListener {
+class ReactAdSenseView extends ReactViewGroup {
 
     protected SearchAdView adView;
-adView.
-    String[] testDevices;
-    AdSize[] validAdSizes;
+
     String adUnitID;
-    AdSize adSize;
-    String targetString = null;
-    int fixedWidth = 0;
-    int fixedHeight = 0;
-    boolean useFixedSizes = false;
+    Boolean adTest;
+    Integer number;
+    String container;
+    String lines;
+    String width;
+    String fontFamily;
+    Integer fontSizeTitle;
+    Integer fontSizeDescription;
+    Integer fontSizeDomainLink;
+    String colorTitleLink;
+    String colorText;
+    String colorDomainLink;
+    String colorBackground;
+    String colorAdBorder;
+    String colorBorder;
+    Boolean noTitleUnderline;
+    Boolean longerHeadlines;
+    Boolean detailedAttribution;
+    String query;
+
+    public String getAdUnitID() {
+        return adUnitID;
+    }
+
+    public Boolean getAdTest() {
+        return adTest;
+    }
+
+    public void setAdTest(Boolean adTest) {
+        this.adTest = adTest;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public String getContainer() {
+        return container;
+    }
+
+    public void setContainer(String container) {
+        this.container = container;
+    }
+
+    public String getLines() {
+        return lines;
+    }
+
+    public void setLines(String lines) {
+        this.lines = lines;
+    }
+
+    public String getFontFamily() {
+        return fontFamily;
+    }
+
+    public void setFontFamily(String fontFamily) {
+        this.fontFamily = fontFamily;
+    }
+
+    public Integer getFontSizeTitle() {
+        return fontSizeTitle;
+    }
+
+    public void setFontSizeTitle(Integer fontSizeTitle) {
+        this.fontSizeTitle = fontSizeTitle;
+    }
+
+    public Integer getFontSizeDescription() {
+        return fontSizeDescription;
+    }
+
+    public void setFontSizeDescription(Integer fontSizeDescription) {
+        this.fontSizeDescription = fontSizeDescription;
+    }
+
+    public Integer getFontSizeDomainLink() {
+        return fontSizeDomainLink;
+    }
+
+    public void setFontSizeDomainLink(Integer fontSizeDomainLink) {
+        this.fontSizeDomainLink = fontSizeDomainLink;
+    }
+
+    public String getColorTitleLink() {
+        return colorTitleLink;
+    }
+
+    public void setColorTitleLink(String colorTitleLink) {
+        this.colorTitleLink = colorTitleLink;
+    }
+
+    public String getColorText() {
+        return colorText;
+    }
+
+    public void setColorText(String colorText) {
+        this.colorText = colorText;
+    }
+
+    public String getColorDomainLink() {
+        return colorDomainLink;
+    }
+
+    public void setColorDomainLink(String colorDomainLink) {
+        this.colorDomainLink = colorDomainLink;
+    }
+
+    public String getColorBackground() {
+        return colorBackground;
+    }
+
+    public void setColorBackground(String colorBackground) {
+        this.colorBackground = colorBackground;
+    }
+
+    public String getColorAdBorder() {
+        return colorAdBorder;
+    }
+
+    public void setColorAdBorder(String colorAdBorder) {
+        this.colorAdBorder = colorAdBorder;
+    }
+
+    public String getColorBorder() {
+        return colorBorder;
+    }
+
+    public void setColorBorder(String colorBorder) {
+        this.colorBorder = colorBorder;
+    }
+
+    public Boolean getNoTitleUnderline() {
+        return noTitleUnderline;
+    }
+
+    public void setNoTitleUnderline(Boolean noTitleUnderline) {
+        this.noTitleUnderline = noTitleUnderline;
+    }
+
+    public Boolean getLongerHeadlines() {
+        return longerHeadlines;
+    }
+
+    public void setLongerHeadlines(Boolean longerHeadlines) {
+        this.longerHeadlines = longerHeadlines;
+    }
+
+    public Boolean getDetailedAttribution() {
+        return detailedAttribution;
+    }
+
+    public void setDetailedAttribution(Boolean detailedAttribution) {
+        this.detailedAttribution = detailedAttribution;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
 
     public ReactAdSenseView(final Context context) {
         super(context);
@@ -52,8 +209,7 @@ adView.
         if (this.adView != null) this.adView.destroy();
 
         final Context context = getContext();
-        this.adView = new PublisherAdView(context);
-        this.adView.setAppEventListener(this);
+        this.adView = new SearchAdView(context);
         this.adView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
@@ -62,62 +218,31 @@ adView.
                 int left = adView.getLeft();
                 int top = adView.getTop();
 
-                if (useFixedSizes) {
-                    WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-                    Display display = mWindowManager.getDefaultDisplay();
-                    DisplayMetrics displaymetrics = new DisplayMetrics();
-                    display.getMetrics(displaymetrics);
-                    adView.setAdSizes(new AdSize(fixedWidth, fixedHeight));
-                    width = adView.getAdSize().getWidthInPixels(context);
-                    height = adView.getAdSize().getHeightInPixels(context);
-                    left = adView.getLeft();
-                    top = adView.getTop();
-
-                } else if (adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length - 1].equals("native1") || adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length - 1].equals("native2")) {
-                    // Deprecated : native modules should not use business specific keys
-                    WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-                    Display display = mWindowManager.getDefaultDisplay();
-                    DisplayMetrics displaymetrics = new DisplayMetrics();
-                    display.getMetrics(displaymetrics);
-
-                    if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180) {
-                        if (fixedWidth > 304) {
-                            adView.setAdSizes(new AdSize(205, fixedHeight));
-                        } else {
-                            adView.setAdSizes(new AdSize(fixedWidth, fixedHeight));
-                        }
-                    }
-
-                    if (display.getRotation() == Surface.ROTATION_90 || display.getRotation() == Surface.ROTATION_270) {
-                        adView.setAdSizes(new AdSize(fixedWidth, fixedHeight));
-                    }
-
-                    width = adView.getAdSize().getWidthInPixels(context);
-                    height = adView.getAdSize().getHeightInPixels(context);
-                    left = adView.getLeft();
-                    top = adView.getTop();
-                }
-
+                WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                Display display = mWindowManager.getDefaultDisplay();
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                display.getMetrics(displaymetrics);
+                adView.setAdSize(AdSize.SEARCH);
                 adView.measure(width, height);
                 adView.layout(left, top, left + width, top + height);
                 sendOnSizeChangeEvent();
-                sendEvent(RNPublisherBannerViewManager.EVENT_AD_LOADED, null);
+                sendEvent(RNAdSenseViewManager.EVENT_AD_LOADED, null);
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 String errorMessage = "Unknown error";
                 switch (errorCode) {
-                    case PublisherAdRequest.ERROR_CODE_INTERNAL_ERROR:
+                    case SearchAdRequest.ERROR_CODE_INTERNAL_ERROR:
                         errorMessage = "Internal error, an invalid response was received from the ad server.";
                         break;
-                    case PublisherAdRequest.ERROR_CODE_INVALID_REQUEST:
+                    case SearchAdRequest.ERROR_CODE_INVALID_REQUEST:
                         errorMessage = "Invalid ad request, possibly an incorrect ad unit ID was given.";
                         break;
-                    case PublisherAdRequest.ERROR_CODE_NETWORK_ERROR:
+                    case SearchAdRequest.ERROR_CODE_NETWORK_ERROR:
                         errorMessage = "The ad request was unsuccessful due to network connectivity.";
                         break;
-                    case PublisherAdRequest.ERROR_CODE_NO_FILL:
+                    case SearchAdRequest.ERROR_CODE_NO_FILL:
                         errorMessage = "The ad request was successful, but no ad was returned due to lack of ad inventory.";
                         break;
                 }
@@ -125,22 +250,22 @@ adView.
                 WritableMap error = Arguments.createMap();
                 error.putString("message", errorMessage);
                 event.putMap("error", error);
-                sendEvent(RNPublisherBannerViewManager.EVENT_AD_FAILED_TO_LOAD, event);
+                sendEvent(RNAdSenseViewManager.EVENT_AD_FAILED_TO_LOAD, event);
             }
 
             @Override
             public void onAdOpened() {
-                sendEvent(RNPublisherBannerViewManager.EVENT_AD_OPENED, null);
+                sendEvent(RNAdSenseViewManager.EVENT_AD_OPENED, null);
             }
 
             @Override
             public void onAdClosed() {
-                sendEvent(RNPublisherBannerViewManager.EVENT_AD_CLOSED, null);
+                sendEvent(RNAdSenseViewManager.EVENT_AD_CLOSED, null);
             }
 
             @Override
             public void onAdLeftApplication() {
-                sendEvent(RNPublisherBannerViewManager.EVENT_AD_LEFT_APPLICATION, null);
+                sendEvent(RNAdSenseViewManager.EVENT_AD_LEFT_APPLICATION, null);
             }
         });
         this.addView(this.adView);
@@ -161,7 +286,7 @@ adView.
         }
         event.putDouble("width", width);
         event.putDouble("height", height);
-        sendEvent(RNPublisherBannerViewManager.EVENT_SIZE_CHANGE, event);
+        sendEvent(RNAdSenseViewManager.EVENT_SIZE_CHANGE, event);
     }
 
     private void sendEvent(String name, @Nullable WritableMap event) {
@@ -175,16 +300,28 @@ adView.
     public void loadBanner() {
         adView.setAdSize(AdSize.SEARCH);
 
-        DynamicHeightSearchAdRequest.Builder adRequestBuilder
-            = new DynamicHeightSearchAdRequest.Builder();
+        DynamicHeightSearchAdRequest.Builder builder =
+            new DynamicHeightSearchAdRequest.Builder();
 
-        if (testDevices != null) {
-            for (int i = 0; i < testDevices.length; i++) {
-                adRequestBuilder.addTestDevice(testDevices[i]);
-            }
-        }
-        PublisherAdRequest adRequest = adRequestBuilder.build();
-        this.adView.loadAd(adRequest);
+        builder.setAdTest(adTest);
+        builder.setNumber(number);
+        builder.setFontFamily(fontFamily);
+        builder.setLongerHeadlines(longerHeadlines);
+        builder.setDetailedAttribution(detailedAttribution);
+        builder.setIsTitleUnderlined(noTitleUnderline);
+        builder.setColorBorder(colorBorder);
+        builder.setColorAdBorder(colorAdBorder);
+        builder.setColorBackground(colorBackground);
+        builder.setColorDomainLink(colorDomainLink);
+        builder.setColorText(colorText);
+        builder.setColorTitleLink(colorTitleLink);
+        builder.setFontSizeDomainLink(fontSizeDomainLink);
+        builder.setFontSizeDescription(fontSizeDescription);
+        builder.setFontSizeTitle(fontSizeTitle);
+        builder.setQuery(query);
+        builder.setCssWidth(300);
+
+        this.adView.loadAd(builder.build());
     }
 
     public void setAdUnitID(String adUnitID) {
@@ -197,55 +334,40 @@ adView.
         this.adView.setAdUnitId(adUnitID);
     }
 
-    public void setTestDevices(String[] testDevices) {
-        this.testDevices = testDevices;
-    }
-
-    public void setAdSize(AdSize adSize) {
-        this.adSize = adSize;
-    }
-
-    public void setValidAdSizes(AdSize[] adSizes) {
-        this.validAdSizes = adSizes;
-    }
-
-    public void setTargeting(String targeting) {
-        this.targetString = targeting;
-    }
-
-    public void setPropFixedHeight(int height) {
-        this.fixedHeight = height;
-    }
-
-    public void setPropFixedWidth(int width) {
-        this.fixedWidth = width;
-    }
-
-    public void setPropUseFixedSizes(boolean useFixedSizes) {
-        this.useFixedSizes = useFixedSizes;
-    }
-
-    @Override
+    /*@Override
     public void onAppEvent(String name, String info) {
         WritableMap event = Arguments.createMap();
         event.putString("name", name);
         event.putString("info", info);
-        sendEvent(RNPublisherBannerViewManager.EVENT_APP_EVENT, event);
-    }
+        sendEvent(RNAdSenseViewManager.EVENT_APP_EVENT, event);
+    }*/
 }
 
 public class RNAdSenseViewManager extends ViewGroupManager<ReactAdSenseView> {
 
     public static final String REACT_CLASS = "RNAdSenseView";
 
-    public static final String PROP_AD_SIZE = "adSize";
-    public static final String PROP_VALID_AD_SIZES = "validAdSizes";
     public static final String PROP_AD_UNIT_ID = "adUnitID";
-    public static final String PROP_TEST_DEVICES = "testDevices";
-    public static final String PROP_BANNER_TARGETING = "targeting";
-    public static final String PROP_FIXED_WIDTH = "fixedWidth";
-    public static final String PROP_FIXED_HEIGHT = "fixedHeight";
-    public static final String PROP_USE_FIXED_SIZES = "useFixedSizes";
+    public static final String PROP_AD_TEST = "adTest";
+
+    public static final String PROP_NUMBER="number";
+    public static final String PROP_CONTAINER="container";
+    public static final String PROP_LINES="lines";
+    public static final String PROP_WIDTH="width";
+    public static final String PROP_FONTFAMILY="fontFamily";
+    public static final String PROP_FONTSIZETITLE="fontSizeTitle";
+    public static final String PROP_FONTSIZEDESCRIPTION="fontSizeDescription";
+    public static final String PROP_FONTSIZEDOMAINLINK="fontSizeDomainLink";
+    public static final String PROP_COLORTITLELINK="colorTitleLink";
+    public static final String PROP_COLORTEXT="colorText";
+    public static final String PROP_COLORDOMAINLINK="colorDomainLink";
+    public static final String PROP_COLORBACKGROUND="colorBackground";
+    public static final String PROP_COLORADBORDER="colorAdBorder";
+    public static final String PROP_COLORBORDER="colorBorder";
+    public static final String PROP_NOTITLEUNDERLINE="noTitleUnderline";
+    public static final String PROP_LONGERHEADLINES= "longerHeadlines";
+    public static final String PROP_DETAILATTRIBUTION="detailedAttribution";
+    public static final String PROP_QUERY="query";
 
     public static final String EVENT_SIZE_CHANGE = "onSizeChange";
     public static final String EVENT_AD_LOADED = "onAdLoaded";
@@ -265,13 +387,13 @@ public class RNAdSenseViewManager extends ViewGroupManager<ReactAdSenseView> {
     }
 
     @Override
-    protected ReactPublisherAdView createViewInstance(ThemedReactContext themedReactContext) {
-        ReactPublisherAdView adView = new ReactPublisherAdView(themedReactContext);
+    protected ReactAdSenseView createViewInstance(ThemedReactContext themedReactContext) {
+        ReactAdSenseView adView = new ReactAdSenseView(themedReactContext);
         return adView;
     }
 
     @Override
-    public void addView(ReactPublisherAdView parent, View child, int index) {
+    public void addView(ReactAdSenseView parent, View child, int index) {
         throw new RuntimeException("RNPublisherBannerView cannot have subviews");
     }
 
@@ -294,92 +416,106 @@ public class RNAdSenseViewManager extends ViewGroupManager<ReactAdSenseView> {
         return builder.build();
     }
 
-    @ReactProp(name = PROP_AD_SIZE)
-    public void setPropAdSize(final ReactPublisherAdView view, final String sizeString) {
-        AdSize adSize = getAdSizeFromString(sizeString);
-        view.setAdSize(adSize);
-    }
-
-    @ReactProp(name = PROP_VALID_AD_SIZES)
-    public void setPropValidAdSizes(final ReactPublisherAdView view, final ReadableArray adSizeStrings) {
-        ReadableNativeArray nativeArray = (ReadableNativeArray)adSizeStrings;
-        ArrayList<Object> list = nativeArray.toArrayList();
-        String[] adSizeStringsArray = list.toArray(new String[list.size()]);
-        AdSize[] adSizes = new AdSize[list.size()];
-
-        for (int i = 0; i < adSizeStringsArray.length; i++) {
-                String adSizeString = adSizeStringsArray[i];
-                adSizes[i] = getAdSizeFromString(adSizeString);
-        }
-        view.setValidAdSizes(adSizes);
-    }
-
     @ReactProp(name = PROP_AD_UNIT_ID)
-    public void setPropAdUnitID(final ReactPublisherAdView view, final String adUnitID) {
+    public void setPropAdUnitID(final ReactAdSenseView view, final String adUnitID) {
         view.setAdUnitID(adUnitID);
     }
 
-    @ReactProp(name = PROP_TEST_DEVICES)
-    public void setPropTestDevices(final ReactPublisherAdView view, final ReadableArray testDevices) {
-        ReadableNativeArray nativeArray = (ReadableNativeArray)testDevices;
-        ArrayList<Object> list = nativeArray.toArrayList();
-        view.setTestDevices(list.toArray(new String[list.size()]));
+    @ReactProp(name = PROP_AD_TEST)
+    public void setPropAdTest(final ReactAdSenseView view, final String adTest) {
+        view.setAdTest(Boolean.valueOf(adTest));
     }
 
-     @ReactProp(name = PROP_FIXED_WIDTH)
-     public void setPropFixedWidth(final ReactPublisherAdView view, final String widthString) {
-        fixedWidth = Integer.parseInt(widthString);
-        view.setPropFixedWidth(fixedWidth);
-        view.setAdSize(new AdSize(fixedWidth, fixedHeight));
-     }
+    @ReactProp(name = PROP_NUMBER)
+    public void setPropNumber(final ReactAdSenseView view, final String number) {
+        view.setNumber(Integer.parseInt(number));
+    }
 
-     @ReactProp(name = PROP_FIXED_HEIGHT)
-     public void setPropFixedHeight(final ReactPublisherAdView view, final String heightString) {
-        fixedHeight = Integer.parseInt(heightString);
-        view.setPropFixedHeight(fixedHeight);
-        view.setAdSize(new AdSize(fixedWidth, fixedHeight));
-     }
+    @ReactProp(name = PROP_CONTAINER)
+    public void setPropContainer(final ReactAdSenseView view, final String container) {
+        view.setContainer(container);
+    }
 
-     @ReactProp(name = PROP_USE_FIXED_SIZES)
-     public void setPropUseFixedSizes(final ReactPublisherAdView view, final boolean useFixedSizes) {
-        view.setPropUseFixedSizes(useFixedSizes);
-     }
+    @ReactProp(name = PROP_LINES)
+    public void setPropLines(final ReactAdSenseView view, final String lines) {
+        view.setLines(lines);
+    }
 
-     @ReactProp(name = PROP_BANNER_TARGETING)
-     public void setTargeting(final ReactPublisherAdView view, final String targetingString) {
-        view.setTargeting(targetingString);
-     }
+    @ReactProp(name = PROP_FONTFAMILY)
+    public void setPropFontFamily(final ReactAdSenseView view, final String fontFamily) {
+        view.setFontFamily(fontFamily);
+    }
 
-    private AdSize getAdSizeFromString(String adSize) {
-        switch (adSize) {
-            case "banner":
-                return AdSize.BANNER;
-            case "largeBanner":
-                return AdSize.LARGE_BANNER;
-            case "mediumRectangle":
-                return AdSize.MEDIUM_RECTANGLE;
-            case "fullBanner":
-                return AdSize.FULL_BANNER;
-            case "leaderBoard":
-                return AdSize.LEADERBOARD;
-            case "smartBannerPortrait":
-                return AdSize.SMART_BANNER;
-            case "smartBannerLandscape":
-                return AdSize.SMART_BANNER;
-            case "smartBanner":
-                return AdSize.SMART_BANNER;
-            case "fluid":
-                return AdSize.FLUID;
-            default:
-                return AdSize.BANNER;
-        }
+    @ReactProp(name = PROP_FONTSIZETITLE)
+    public void setPropFontSizeTitle(final ReactAdSenseView view, final String fontSizeTitle) {
+        view.setFontSizeTitle(Integer.parseInt(fontSizeTitle));
+    }
+
+    @ReactProp(name = PROP_FONTSIZEDESCRIPTION)
+    public void setPropFontsizedescription(final ReactAdSenseView view, final String fontSizeDescription) {
+        view.setFontSizeDescription(Integer.parseInt(fontSizeDescription));
+    }
+
+    @ReactProp(name = PROP_FONTSIZEDOMAINLINK)
+    public void setPropFontsizedomainlink(final ReactAdSenseView view, final String fontSizeDomainLink) {
+        view.setFontSizeDomainLink(Integer.parseInt(fontSizeDomainLink));
+    }
+
+    @ReactProp(name = PROP_COLORTITLELINK)
+    public void setPropColorTitleLink(final ReactAdSenseView view, final String colorTitleLink) {
+        view.setColorTitleLink(colorTitleLink);
+    }
+
+    @ReactProp(name = PROP_COLORTEXT)
+    public void setPropColorText(final ReactAdSenseView view, final String colorText) {
+        view.setColorTitleLink(colorText);
+    }
+
+    @ReactProp(name = PROP_COLORDOMAINLINK)
+    public void setPropColorDomainLink(final ReactAdSenseView view, final String colorDomainLink) {
+        view.setColorDomainLink(colorDomainLink);
+    }
+
+    @ReactProp(name = PROP_COLORBACKGROUND)
+    public void setPropColorBackground(final ReactAdSenseView view, final String colorBackground) {
+        view.setColorBackground(colorBackground);
+    }
+
+    @ReactProp(name = PROP_COLORADBORDER)
+    public void setPropColorAdBorder(final ReactAdSenseView view, final String colorAdBorder) {
+        view.setColorAdBorder(colorAdBorder);
+    }
+
+    @ReactProp(name = PROP_COLORBORDER)
+    public void setPropColorBorder(final ReactAdSenseView view, final String colorBorder) {
+        view.setColorBorder(colorBorder);
+    }
+
+    @ReactProp(name = PROP_NOTITLEUNDERLINE)
+    public void setPropNoTitleUnderline(final ReactAdSenseView view, final String noTitleUnderline) {
+        view.setNoTitleUnderline(Boolean.parseBoolean(noTitleUnderline));
+    }
+
+    @ReactProp(name = PROP_LONGERHEADLINES)
+    public void setPropLongerHeadlines(final ReactAdSenseView view, final String longerHeadlines) {
+        view.setLongerHeadlines(Boolean.parseBoolean(longerHeadlines));
+    }
+
+    @ReactProp(name = PROP_DETAILATTRIBUTION)
+    public void setPropDetailedAttribution(final ReactAdSenseView view, final String detailedAttribution) {
+        view.setDetailedAttribution(Boolean.parseBoolean(detailedAttribution));
+    }
+
+    @ReactProp(name = PROP_QUERY)
+    public void setPropQuery(final ReactAdSenseView view, final String query) {
+        view.setQuery(query);
     }
 
     @Nullable
     @Override
     public Map<String, Object> getExportedViewConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        constants.put("simulatorId", PublisherAdRequest.DEVICE_ID_EMULATOR);
+        constants.put("simulatorId", SearchAdRequest.DEVICE_ID_EMULATOR);
         return constants;
     }
 
@@ -390,7 +526,7 @@ public class RNAdSenseViewManager extends ViewGroupManager<ReactAdSenseView> {
     }
 
     @Override
-    public void receiveCommand(ReactPublisherAdView root, int commandId, @javax.annotation.Nullable ReadableArray args) {
+    public void receiveCommand(ReactAdSenseView root, int commandId, @javax.annotation.Nullable ReadableArray args) {
         switch (commandId) {
             case COMMAND_LOAD_BANNER:
                 root.loadBanner();
