@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "devices": "adb devices",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "run:android": "node node_modules/react-native/local-cli/cli.js run-android",
+    "tcp": "adb reverse tcp:8081 tcp:8081 & adb reverse tcp:8097 tcp:8097"
   },
   "dependencies": {
     "react": "16.0.0",
     "react-native": "0.50.3",
-    "react-native-admob": "file:.."
+    "react-native-adsense": "file:.."
   },
   "devDependencies": {
     "babel-jest": "21.2.0",
