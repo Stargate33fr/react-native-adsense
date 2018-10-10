@@ -5,8 +5,8 @@ const escape = require('escape-string-regexp');
 module.exports = {
   getBlacklistRE() {
     return blacklist([
-      new RegExp(`^${escape(path.resolve(__dirname, 'node_modules', 'react-native-admob', 'node_modules'))}\\/.*$`),
-      new RegExp(`^${escape(path.resolve(__dirname, 'node_modules', 'react-native-admob', 'Example'))}\\/.*$`),
+      new RegExp(`^${escape(path.resolve(__dirname, 'node_modules', 'react-native-adsense', 'node_modules'))}\\/.*$`),
+      new RegExp(`^${escape(path.resolve(__dirname, 'node_modules', 'react-native-adsense', 'Example'))}\\/.*$`),
     ]);
   },
 };
